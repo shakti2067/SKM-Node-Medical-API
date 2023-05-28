@@ -3,8 +3,11 @@ const Schema = mongoose.Schema
 
 
 const schemaOptions = {
-    createdAt: "createdDate",
-    updateAt: "updateDate"
+    timestamps: {
+        createdAt: "createdDate",
+        updatedAt: "updatedDate"
+    }
+
 }
 
 const AdminLoginlogsSchema = new Schema({
@@ -21,7 +24,7 @@ const AdminLoginlogsSchema = new Schema({
     },
     logoutStatus: {
         type: String,
-        enum: ["Logout", "Login"]
+        enum: ["Logout", "change_password"]
     },
     isActive: {
         type: Boolean,
@@ -35,7 +38,7 @@ const AdminLoginlogsSchema = new Schema({
     schemaOptions)
 
 AdminLoginlogsSchema.pre("save", function (next) {
-    this.updateDate = new Date()
+    this.updatedDate = new Date()
     next()
 })
 
