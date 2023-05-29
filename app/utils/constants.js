@@ -17,6 +17,8 @@ module.exports = {
         InternalServerError: " Internal Server Error",
         UpdateErrorMsg: "{0} not update",
         DeleteErrorMsg: "{0} not Deleted",
-        TokenError: "{0} Invalid Token"
+        TokenError: "{0} Invalid Token",
+        changePasswordFailed: "{0} change password Failed",
+        ForgotPassowordFailed: "{0} forgot passowrd send failed"
     }
 }

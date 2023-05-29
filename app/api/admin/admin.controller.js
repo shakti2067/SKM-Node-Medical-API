@@ -1,4 +1,3 @@
-
 const AdminUser = require("../../models/admin.user.model")
 const AdminLoginlogs = require("../../models/admin.login.logs.model")
 const Role = require("../../models/adminRole.model")
@@ -6,6 +5,9 @@ const logger = require("../../utils/logger")
 const util = require("util")
 const mongoCommon = require("../mongoCommon/mongoCommon.controller")
 const { default: mongoose } = require("mongoose")
+
+const AdminOtp = require("../../models/adminUser.otp.model")
+const mailer = require("../../utils/mailer")
 
 exports.register = async (data) => {
     try {
@@ -190,5 +192,87 @@ exports.logout = async (id) => {
             util.format("Error while Admin logout %O", error)
         )
         throw new Error
+    }
+}
+
+exports.changePassword = async (id, password) => {
+    try {
+        let checkUser = await AdminUser.findOne({ _id: id, isActive: true })
+
+        if (checkUser) {
+            // haspassword
+            let haspassword = await checkUser.encriptPassword(password)
+
+            //save password
+            checkUser.haspassword = haspassword
+
+            user = await checkUser.save()
+
+            // token exipred
+            await AdminLoginlogs.updateMany({ userId: checkUser._id }, { isActive: false, logoutStatus: "change_password" })
+
+            if (user) {
+
+                return "Password change successfully"
+
+            } else {
+                return false
+            }
+
+        } else {
+            return "User not found"
+        }
+    } catch (error) {
+        // console.log("error::", error)
+        logger.error(
+            util.format("Error while change password %O", error)
+        )
+        throw new Error
+    }
+}
+
+exports.adminForgotPassword = async (email) => {
+    try {
+        let checkUser = await AdminUser.findOne({ email: email })
+
+        if (checkUser) {
+            let otp = Math.floor(Math.random() * 1000000)
+
+            let checkOtp = await AdminOtp.findOne({ userId: checkUser._id, isActive: true })
+
+            if (checkOtp) {
+                checkOtp.otp = otp
+                checkOtp.otpSendDate = new Date()
+
+                let otpSave = await checkOtp.save()
+            } else {
+                otpObj = {
+                    userId: checkUser,
+                    otp: otp,
+                    otpSendDate: new Date()
+                }
+
+                let opt = await AdminOtp.create(otpObj)
+            }
+
+            let mailObj = {
+                to: checkUser.email,
+                subject: "Verify Admin OTP",
+                message: `Your Admin OTP is ${otp}`
+            }
+            mailer.sendMail(mailObj)
+
+            return "Otp send successfully"
+
+        } else {
+            return "user not found"
+        }
+
+    } catch (error) {
+        // console.log(error)
+        logger.error(
+            util.format("Error while forgot passowrd %O", error)
+        )
+        throw new Error(error)
     }
 }

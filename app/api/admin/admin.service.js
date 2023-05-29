@@ -80,3 +80,47 @@ exports.logout = async (req, res) => {
         return res.status(500).send(error.message || "Error in logout admin.service")
     }
 }
+
+exports.changePassword = async (req, res) => {
+    try {
+        const id = req.user._id
+        const password = req.body.password
+        const response = await controller.changePassword(id, password)
+
+        if (response) {
+            return res.status(200).send(
+                common.sendSucessResponse(constants.messageKeys.code_2000, response)
+            )
+        } else {
+            return res.status(200).send(
+                common.sendMessageResponse(constants.systemMsg.changePasswordFailed.replace("{0}", "change passowrd"))
+            )
+        }
+    } catch (error) {
+        // console.log("error:::", error)
+        return res.status(500).send(
+            common.sendErrorResponse(error.message || "Error in admin.service - changePassword")
+        )
+    }
+}
+
+exports.adminForgotPassword = async (req, res) => {
+    try {
+        const response = await controller.adminForgotPassword(req.body.email)
+
+        if (response) {
+            return res.status(200).send(
+                common.sendSucessResponse(constants.messageKeys.code_2000, response)
+            )
+        } else {
+            return res.send(
+                common.sendMessageResponse(constants.systemMsg.ForgotPassowordFailed.repeat("{0}", "forgot password"))
+            )
+        }
+    } catch (error) {
+        // console.log("error::", error)
+        return res.status(500).send(
+            common.sendErrorResponse(error.message || "Error in admin.service - admin forgot password")
+        )
+    }
+}
