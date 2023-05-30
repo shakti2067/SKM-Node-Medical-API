@@ -116,18 +116,19 @@ exports.adminLogin = async (data) => {
     }
 }
 
-exports.getAdminModuleByUser = async (id) => {
+exports.getAdminModuleByRole = async (id) => {
     try {
-
         let isActive
         let query = {}
 
         if (global.isAdmin) {
             query._id = mongoose.Types.ObjectId(id)
             query.isActive = true
+            query.isDeleted = false
         } else {
             query._id = mongoose.Types.ObjectId(id)
             query.isActive = true
+            query.isDeleted = false
         }
 
         let aggregateQuery = [
@@ -139,36 +140,85 @@ exports.getAdminModuleByUser = async (id) => {
                 }
             },
             {
-                '$lookup': {
-                    'from': 'adminroles',
-                    'localField': 'roleId',
-                    'foreignField': '_id',
-                    'as': 'roleName'
+                $lookup: {
+                    from: "adminfeatures",
+                    let: { "adminfeature": "$adminFeature" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        {
+                                            $in: ["$_id", "$$adminfeature"]
+                                        },
+                                        {
+                                            $eq: ["$parent_id", null]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 1,
+                                title: 1,
+                                key: 1,
+                                url: 1,
+                                is_Parent: 1,
+                                parent_id: 1,
+                                isActive: 1
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "adminfeatures",
+                                let: { "parent_id": "$_id" },
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $and: [
+                                                    {
+                                                        $in: ["$_id", "$$adminfeature"]
+                                                    },
+                                                    {
+                                                        $eq: ["$parent_id", "$$parent_id"] // first id is forign id and second is local id
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }, {
+                                        $project: {
+                                            _id: 1,
+                                            title: 1,
+                                            url: 1,
+                                            is_Parent: 1,
+                                            parent_id: 1,
+                                            isActive: 1
+
+                                        }
+                                    }
+                                ],
+                                as: "child"
+                            }
+                        }
+                    ],
+                    as: "parent"
                 }
             },
             {
-                '$lookup': {
-                    'from': 'adminfeatures',
-                    'localField': 'roleName.adminFeature',
-                    'foreignField': '_id',
-                    'as': 'adminfeaturesName'
-                }
-            },
-            {
-                '$project': {
-                    // 'username': 1,
-                    'module': '$adminfeaturesName.title',
-                    'url': '$adminfeaturesName.url',
-                    'isActive': 1,
-                    'isDeleted': 1,
-                    'createdDate': 1,
-                    'updatedDate': 1
+                $project: {
+                    parent: 1,
+                    child: 1,
+                    title: 1,
+                    url: 1,
+                    isActive: 1
                 }
             }
+
         ]
 
-
-        const result = await AdminUser.aggregate(aggregateQuery)
+        const result = await Role.aggregate(aggregateQuery)
 
         return result
 

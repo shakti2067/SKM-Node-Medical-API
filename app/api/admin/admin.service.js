@@ -46,10 +46,10 @@ exports.adminLogin = async (req, res) => {
     }
 }
 
-exports.getAdminModuleByUser = async (req, res) => {
+exports.getAdminModuleByRole = async (req, res) => {
     try {
-        const id = req.user._id
-        let response = await controller.getAdminModuleByUser(id)
+        const id = req.user.roleId
+        let response = await controller.getAdminModuleByRole(id)
 
         if (!response) {
             return res.status(200).send(
