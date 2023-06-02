@@ -65,3 +65,25 @@ exports.getAllAdminRole = async (req, res) => {
         )
     }
 }
+
+exports.updateRole = async (req, res) => {
+    try {
+        const id = req.params.id
+        const response = await controller.updateRole(id, req.body)
+        if (!response) {
+            return res.status(200).send(
+                common.sendMessageResponse(constants.systemMsg.GetErrorMsg.replace("{0}", "Update Role"))
+            )
+        } else {
+            return res.status(200).send(
+                common.sendSucessResponse(constants.messageKeys.code_2000, response)
+            )
+        }
+    } catch (error) {
+        // console.log("error::", error)
+        return res.status(500).send(
+            common.sendErrorResponse(error.message || "Error in updateRole - service")
+        )
+
+    }
+}

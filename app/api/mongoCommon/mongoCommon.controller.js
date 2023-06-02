@@ -99,7 +99,7 @@ exports.updateDocuments = async (model, collectionId, doc) => {
             throw "Documents is not updated"
         }
 
-        const result = update.save()
+        const result = await update.save()
         return result
 
     } catch (error) {

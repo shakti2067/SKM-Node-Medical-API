@@ -1,10 +1,12 @@
 const express = require("express")
 const router = express.Router()
 const service = require("./adminRole.service")
+const auth = require("../../middlewares/auth")
 
-router.post("/", service.addAdminRole)
-router.get("/:id", service.getAdminRoleById)
-router.get("/", service.getAllAdminRole)
+router.post("/", [auth.getRole], service.addAdminRole)
+router.get("/:id", [auth.getRole], service.getAdminRoleById)
+router.get("/", [auth.getRole], service.getAllAdminRole)
+router.put("/:id", [auth.getRole], service.updateRole)
 
 
 
