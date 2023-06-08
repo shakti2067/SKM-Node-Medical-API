@@ -16,6 +16,7 @@ app.use("/api/brand", require("./api/brands"))
 app.use("/api/admin", require("./api/admin"))
 app.use("/api/adminFeature", require("./api/adminFeature"))
 app.use("/api/adminRole", require("./api/adminRole"))
+app.use("/api/productForm", require("./api/productForm"))
 
 
 module.exports = app

@@ -9,7 +9,7 @@ const schemaOptions = {
     }
 }
 
-const productSchema = Schema({
+const productFormSchema = Schema({
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
@@ -17,10 +17,6 @@ const productSchema = Schema({
     modifiedBy: {
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
-    },
-    product_id: {
-        type: mongoose.Types.ObjectId,
-        ref: "counter"
     },
     form: [],
     filterForm: [],
@@ -32,27 +28,12 @@ const productSchema = Schema({
         type: Boolean,
         default: false
     },
-    isTrending: {
-        type: Boolean,
-        default: false
-    },
-    isNewLaunch: {
-        type: Boolean,
-        default: false
-    },
-    isFeature: {
-        type: Boolean,
-        default: false
-    },
-    rating: {
-        type: Number,
 
-    }
 }, schemaOptions)
 
-productSchema.pre("save", function (next) {
+productFormSchema.pre("save", function (next) {
     this.updatedDate = new Date()
     next()
 })
 
-module.exports = mongoose.model("product", productSchema)
+module.exports = mongoose.model("productForm", productFormSchema)
