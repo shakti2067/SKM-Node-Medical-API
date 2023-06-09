@@ -10,6 +10,10 @@ const schemaOptions = {
 }
 
 const productFormSchema = Schema({
+    productFormTitleKey: {
+        type: String,
+        default: "skmForm"
+    },
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
@@ -20,6 +24,10 @@ const productFormSchema = Schema({
     },
     form: [],
     filterForm: [],
+    isExpired: {
+        type: Boolean,
+        default: false
+    },
     isActive: {
         type: Boolean,
         default: true

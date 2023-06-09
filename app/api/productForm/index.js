@@ -1,9 +1,10 @@
 const express = require("express")
 const router = express.Router()
-const service = require("./productForm.service")
+const controller = require("./productForm.controller")
 const auth = require("../../middlewares/auth")
 
-router.post("/", [auth.getRole], service.addProductForm)
+router.post("/", [auth.getRole], controller.addProductForm)
+router.get("/", [auth.getRole], controller.getProductForm)
 
 
 module.exports = router
