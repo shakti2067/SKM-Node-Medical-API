@@ -35,3 +35,48 @@ exports.addBrand = async (req, res) => {
         )
     }
 }
+
+exports.getBrandByCategoryId = async (req, res) => {
+    try {
+        const id = req.params.categoryId
+        const response = await controller.getBrandByCategoryId(id)
+
+        if (!response) {
+            return res.status(200).send(
+                common.sendMessageResponse(constants.systemMsg.GetErrorMsg.replace("{0}", "Brand"))
+            )
+        } else {
+            return res.status(200).send(
+                common.sendSucessResponse(constants.messageKeys.code_2000, response)
+            )
+        }
+
+    } catch (error) {
+        // console.log("error::", error)
+        return res.status(500).send(
+            common.sendErrorResponse(error.message || "Error in  getBrandByCategoryId - service")
+        )
+    }
+}
+
+exports.updateBrand = async (req, res) => {
+    try {
+        const id = req.params.id
+        const response = await controller.updateBrand(id, req.body)
+        if (!response) {
+            return res.status(200).send(
+                common.sendMessageResponse(constants.systemMsg.UpdateErrorMsg.replace("{0}", "Brand"))
+            )
+        } else {
+            return res.status(200).send(
+                common.sendSucessResponse(constants.messageKeys.code_2000, response)
+            )
+        }
+
+    } catch (error) {
+        // console.log(error)
+        return res.status(500).send(
+            common.sendErrorResponse(error.message || "Error in  getBrandByCategoryId - service")
+        )
+    }
+}

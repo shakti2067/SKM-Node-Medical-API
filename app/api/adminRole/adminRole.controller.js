@@ -44,3 +44,15 @@ exports.getAllAdminRole = async () => {
         )
     }
 }
+
+exports.updateRole = async (id, data) => {
+    try {
+        let result = await common.updateDocuments("adminRole", id, data)
+        return result
+    } catch (error) {
+        // console.log("error::", error)
+        logger.error(
+            util.format("Error while updating  AdminRole documents %O", error)
+        )
+    }
+}

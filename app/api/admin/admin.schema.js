@@ -10,7 +10,8 @@ const _register = Joi.object().keys({
 
     username: Joi.string().required(),
     password: Joi.string().required(),
-    email: Joi.string().email().required()
+    email: Joi.string().email().required(),
+    role: Joi.string().required()
 
 })
 

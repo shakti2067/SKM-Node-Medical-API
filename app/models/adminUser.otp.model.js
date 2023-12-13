@@ -1,45 +1,41 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-
 const schemaOptions = {
     timestamps: {
         createdAt: "createdDate",
         updatedAt: "updatedDate"
     }
-
 }
 
-const AdminLoginlogsSchema = new Schema({
+const adminUserOtpSchema = Schema({
     userId: {
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
     },
-    token: {
+    otp: {
         type: String,
     },
-    expiredToken: {
+    otpSendDate: {
         type: Date,
-        default: new Date()
-    },
-    logoutStatus: {
-        type: String,
-        enum: ["Logout", "change_password"]
+        default: "",
+        required: true
     },
     isActive: {
         type: Boolean,
         default: true
     },
-    isDeteled: {
+    isDeleted: {
         type: Boolean,
         default: false
     }
 },
     schemaOptions)
 
-AdminLoginlogsSchema.pre("save", function (next) {
+adminUserOtpSchema.pre("save", function (next) {
     this.updatedDate = new Date()
     next()
 })
 
-module.exports = mongoose.model("admin_login_log", AdminLoginlogsSchema)
+
+module.exports = mongoose.model("admin_otp", adminUserOtpSchema)

@@ -9,7 +9,11 @@ const schemaOptions = {
     }
 }
 
-const productSchema = Schema({
+const productFormSchema = Schema({
+    productFormTitleKey: {
+        type: String,
+        default: "skmForm"
+    },
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
@@ -18,12 +22,12 @@ const productSchema = Schema({
         type: mongoose.Types.ObjectId,
         ref: "adminuser"
     },
-    product_id: {
-        type: mongoose.Types.ObjectId,
-        ref: "counter"
-    },
     form: [],
     filterForm: [],
+    isExpired: {
+        type: Boolean,
+        default: false
+    },
     isActive: {
         type: Boolean,
         default: true
@@ -32,27 +36,12 @@ const productSchema = Schema({
         type: Boolean,
         default: false
     },
-    isTrending: {
-        type: Boolean,
-        default: false
-    },
-    isNewLaunch: {
-        type: Boolean,
-        default: false
-    },
-    isFeature: {
-        type: Boolean,
-        default: false
-    },
-    rating: {
-        type: Number,
 
-    }
 }, schemaOptions)
 
-productSchema.pre("save", function (next) {
+productFormSchema.pre("save", function (next) {
     this.updatedDate = new Date()
     next()
 })
 
-module.exports = mongoose.model("product", productSchema)
+module.exports = mongoose.model("productForm", productFormSchema)
